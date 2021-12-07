@@ -1,0 +1,4 @@
+"./BSP.o"
+"./startup_stm32g031k8tx.o"
+"./system_stm32g0xx.o"
+"./wow_nerden.o"

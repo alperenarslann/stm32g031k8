@@ -1,0 +1,160 @@
+
+Discarded input sections
+
+ .group         0x0000000000000000        0xc ./main.o
+ .text          0x0000000000000000        0x0 ./main.o
+ .data          0x0000000000000000        0x0 ./main.o
+ .bss           0x0000000000000000        0x0 ./main.o
+ .data.GPIOC_ODR
+                0x0000000000000000        0x4 ./main.o
+ .data.GPIOC_MODER
+                0x0000000000000000        0x4 ./main.o
+ .data.GPIOA_ODR
+                0x0000000000000000        0x4 ./main.o
+ .data.EXTI_RPR1
+                0x0000000000000000        0x4 ./main.o
+ .data.EXTI_EXTICR1
+                0x0000000000000000        0x4 ./main.o
+ .data.EXTI_EXTICR2
+                0x0000000000000000        0x4 ./main.o
+ .data.EXTI_EXTICR3
+                0x0000000000000000        0x4 ./main.o
+ .text.delay    0x0000000000000000       0x20 ./main.o
+ .text.states   0x0000000000000000      0x138 ./main.o
+ .rodata.states
+                0x0000000000000000       0x18 ./main.o
+ .text.EXTI4_7_IRQHandler
+                0x0000000000000000       0x28 ./main.o
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+ROM              0x0000000008000000 0x0000000000010000 xr
+RAM              0x0000000020000000 0x0000000000002000 xrw
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Linker script and memory map
+
+LOAD ./main.o
+START GROUP
+LOAD c:/st/stm32cubeide_1.7.0/stm32cubeide/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.9-2020-q2-update.win32_2.0.0.202105311346/tools/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/nofp\libc_nano.a
+LOAD c:/st/stm32cubeide_1.7.0/stm32cubeide/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.9-2020-q2-update.win32_2.0.0.202105311346/tools/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/nofp\libm.a
+END GROUP
+                0x0000000020002000                _estack = (ORIGIN (RAM) + LENGTH (RAM))
+
+.text           0x0000000008000000      0x168
+ *(.vectors)
+ .vectors       0x0000000008000000       0x10 ./main.o
+                0x0000000008000000                vector_table
+ *(.text*)
+ .text._init_data
+                0x0000000008000010       0x60 ./main.o
+                0x0000000008000010                _init_data
+ .text.Reset_Handler
+                0x0000000008000070        0xe ./main.o
+                0x0000000008000070                Reset_Handler
+ .text.Default_Handler
+                0x000000000800007e        0x6 ./main.o
+                0x000000000800007e                Default_Handler
+ .text.setup    0x0000000008000084       0xd4 ./main.o
+                0x0000000008000084                setup
+ .text.main     0x0000000008000158       0x10 ./main.o
+                0x0000000008000158                main
+ *(.rodata*)
+                0x0000000008000168                __etext = ALIGN (0x4)
+
+.glue_7         0x0000000008000168        0x0
+ .glue_7        0x0000000008000168        0x0 linker stubs
+
+.glue_7t        0x0000000008000168        0x0
+ .glue_7t       0x0000000008000168        0x0 linker stubs
+
+.vfp11_veneer   0x0000000008000168        0x0
+ .vfp11_veneer  0x0000000008000168        0x0 linker stubs
+
+.v4_bx          0x0000000008000168        0x0
+ .v4_bx         0x0000000008000168        0x0 linker stubs
+
+.iplt           0x0000000008000168        0x0
+ .iplt          0x0000000008000168        0x0 ./main.o
+
+.rel.dyn        0x0000000008000168        0x0
+ .rel.iplt      0x0000000008000168        0x0 ./main.o
+
+.data           0x0000000020000000       0x20 load address 0x0000000008000168
+                0x0000000020000000                __data_start__ = .
+ *(.data*)
+ .data.RCC_IOPENR
+                0x0000000020000000        0x4 ./main.o
+                0x0000000020000000                RCC_IOPENR
+ .data.RCC_APBENR2
+                0x0000000020000004        0x4 ./main.o
+                0x0000000020000004                RCC_APBENR2
+ .data.GPIOA_MODER
+                0x0000000020000008        0x4 ./main.o
+                0x0000000020000008                GPIOA_MODER
+ .data.GPIOA_IDR
+                0x000000002000000c        0x4 ./main.o
+                0x000000002000000c                GPIOA_IDR
+ .data.EXTI_RTSR1
+                0x0000000020000010        0x4 ./main.o
+                0x0000000020000010                EXTI_RTSR1
+ .data.EXTI_IMR1
+                0x0000000020000014        0x4 ./main.o
+                0x0000000020000014                EXTI_IMR1
+ .data.EXTI_EXTICR4
+                0x0000000020000018        0x4 ./main.o
+                0x0000000020000018                EXTI_EXTICR4
+ .data.NVIC_ISER
+                0x000000002000001c        0x4 ./main.o
+                0x000000002000001c                NVIC_ISER
+                0x0000000020000020                . = ALIGN (0x4)
+                0x0000000020000020                __data_end__ = .
+
+.igot.plt       0x0000000020000020        0x0 load address 0x0000000008000188
+ .igot.plt      0x0000000020000020        0x0 ./main.o
+
+.bss            0x0000000020000020        0x0 load address 0x0000000008000188
+                0x0000000020000020                . = ALIGN (0x4)
+                0x0000000020000020                __bss_start__ = .
+ *(.bss*)
+                0x0000000020000020                . = ALIGN (0x4)
+                0x0000000020000020                __bss_end__ = .
+OUTPUT(fsm_led_yakma_C_without_lib.elf elf32-littlearm)
+LOAD linker stubs
+
+.debug_info     0x0000000000000000      0x312
+ .debug_info    0x0000000000000000      0x312 ./main.o
+
+.debug_abbrev   0x0000000000000000      0x17a
+ .debug_abbrev  0x0000000000000000      0x17a ./main.o
+
+.debug_aranges  0x0000000000000000       0x58
+ .debug_aranges
+                0x0000000000000000       0x58 ./main.o
+
+.debug_ranges   0x0000000000000000       0x48
+ .debug_ranges  0x0000000000000000       0x48 ./main.o
+
+.debug_macro    0x0000000000000000      0xafb
+ .debug_macro   0x0000000000000000       0x8f ./main.o
+ .debug_macro   0x000000000000008f      0xa6c ./main.o
+
+.debug_line     0x0000000000000000      0x191
+ .debug_line    0x0000000000000000      0x191 ./main.o
+
+.debug_str      0x0000000000000000     0x30be
+ .debug_str     0x0000000000000000     0x30be ./main.o
+                                       0x30eb (size before relaxing)
+
+.comment        0x0000000000000000       0x53
+ .comment       0x0000000000000000       0x53 ./main.o
+                                         0x54 (size before relaxing)
+
+.ARM.attributes
+                0x0000000000000000       0x2c
+ .ARM.attributes
+                0x0000000000000000       0x2c ./main.o
+
+.debug_frame    0x0000000000000000      0x100
+ .debug_frame   0x0000000000000000      0x100 ./main.o

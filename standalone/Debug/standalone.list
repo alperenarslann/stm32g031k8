@@ -1,0 +1,203 @@
+
+standalone.elf:     file format elf32-littlearm
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         00000104  08000000  08000000  00010000  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         0000000c  20000000  08000104  00020000  2**2
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .bss          00000000  2000000c  08000110  00000000  2**0
+                  ALLOC
+  3 .debug_info   0000018e  00000000  00000000  0002000c  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+  4 .debug_abbrev 00000113  00000000  00000000  0002019a  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+  5 .debug_aranges 00000038  00000000  00000000  000202ad  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+  6 .debug_ranges 00000028  00000000  00000000  000202e5  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+  7 .debug_macro  00000aa1  00000000  00000000  0002030d  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+  8 .debug_line   000000df  00000000  00000000  00020dae  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+  9 .debug_str    00002df9  00000000  00000000  00020e8d  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 10 .comment      00000053  00000000  00000000  00023c86  2**0
+                  CONTENTS, READONLY
+ 11 .ARM.attributes 0000002c  00000000  00000000  00023cd9  2**0
+                  CONTENTS, READONLY
+ 12 .debug_frame  00000088  00000000  00000000  00023d08  2**2
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+
+Disassembly of section .text:
+
+08000000 <vector_table>:
+ 8000000:	00 20 00 20 71 00 00 08 7f 00 00 08 7f 00 00 08     . . q...........
+
+08000010 <_init_data>:
+    Default_Handler    /* 0x00C HardFault     */
+    /* rest of the interrupts should go here  */
+};
+
+/* initialize data and bss sections */
+void _init_data(void) {
+ 8000010:	b580      	push	{r7, lr}
+ 8000012:	b082      	sub	sp, #8
+ 8000014:	af00      	add	r7, sp, #0
+    /* these are symbols from linker script */
+    extern unsigned long __etext, __data_start__, __data_end__, __bss_start__, __bss_end__;
+    unsigned long *src = &__etext;
+ 8000016:	4b11      	ldr	r3, [pc, #68]	; (800005c <_init_data+0x4c>)
+ 8000018:	607b      	str	r3, [r7, #4]
+    unsigned long *dst = &__data_start__;
+ 800001a:	4b11      	ldr	r3, [pc, #68]	; (8000060 <_init_data+0x50>)
+ 800001c:	603b      	str	r3, [r7, #0]
+
+    /* ROM has data at end of text. copy it */
+    while (dst < &__data_end__)
+ 800001e:	e007      	b.n	8000030 <_init_data+0x20>
+        *dst++ = *src++;
+ 8000020:	687a      	ldr	r2, [r7, #4]
+ 8000022:	1d13      	adds	r3, r2, #4
+ 8000024:	607b      	str	r3, [r7, #4]
+ 8000026:	683b      	ldr	r3, [r7, #0]
+ 8000028:	1d19      	adds	r1, r3, #4
+ 800002a:	6039      	str	r1, [r7, #0]
+ 800002c:	6812      	ldr	r2, [r2, #0]
+ 800002e:	601a      	str	r2, [r3, #0]
+    while (dst < &__data_end__)
+ 8000030:	683a      	ldr	r2, [r7, #0]
+ 8000032:	4b0c      	ldr	r3, [pc, #48]	; (8000064 <_init_data+0x54>)
+ 8000034:	429a      	cmp	r2, r3
+ 8000036:	d3f3      	bcc.n	8000020 <_init_data+0x10>
+
+    /* zero bss */
+    for (dst = &__bss_start__; dst< &__bss_end__; dst++)
+ 8000038:	4b0b      	ldr	r3, [pc, #44]	; (8000068 <_init_data+0x58>)
+ 800003a:	603b      	str	r3, [r7, #0]
+ 800003c:	e005      	b.n	800004a <_init_data+0x3a>
+        *dst = 0;
+ 800003e:	683b      	ldr	r3, [r7, #0]
+ 8000040:	2200      	movs	r2, #0
+ 8000042:	601a      	str	r2, [r3, #0]
+    for (dst = &__bss_start__; dst< &__bss_end__; dst++)
+ 8000044:	683b      	ldr	r3, [r7, #0]
+ 8000046:	3304      	adds	r3, #4
+ 8000048:	603b      	str	r3, [r7, #0]
+ 800004a:	683a      	ldr	r2, [r7, #0]
+ 800004c:	4b07      	ldr	r3, [pc, #28]	; (800006c <_init_data+0x5c>)
+ 800004e:	429a      	cmp	r2, r3
+ 8000050:	d3f5      	bcc.n	800003e <_init_data+0x2e>
+}
+ 8000052:	46c0      	nop			; (mov r8, r8)
+ 8000054:	46c0      	nop			; (mov r8, r8)
+ 8000056:	46bd      	mov	sp, r7
+ 8000058:	b002      	add	sp, #8
+ 800005a:	bd80      	pop	{r7, pc}
+ 800005c:	08000104 	.word	0x08000104
+ 8000060:	20000000 	.word	0x20000000
+ 8000064:	2000000c 	.word	0x2000000c
+ 8000068:	2000000c 	.word	0x2000000c
+ 800006c:	2000000c 	.word	0x2000000c
+
+08000070 <Reset_Handler>:
+
+/* Entry point, calls main after prologue */
+void Reset_Handler(void) {
+ 8000070:	b580      	push	{r7, lr}
+ 8000072:	af00      	add	r7, sp, #0
+    _init_data();
+ 8000074:	f7ff ffcc 	bl	8000010 <_init_data>
+    main();
+ 8000078:	f000 f804 	bl	8000084 <main>
+    for(;;);
+ 800007c:	e7fe      	b.n	800007c <Reset_Handler+0xc>
+
+0800007e <Default_Handler>:
+}
+
+/* All faults will end up here, since we did not define the rest of the vector
+ * table, the other exceptions/interrupts will most likely crash the program.
+ */
+void Default_Handler(void) { for(;;); }
+ 800007e:	b580      	push	{r7, lr}
+ 8000080:	af00      	add	r7, sp, #0
+ 8000082:	e7fe      	b.n	8000082 <Default_Handler+0x4>
+
+08000084 <main>:
+
+int main(void) {
+ 8000084:	b580      	push	{r7, lr}
+ 8000086:	b082      	sub	sp, #8
+ 8000088:	af00      	add	r7, sp, #0
+
+    /* Enable GPIOC clock */
+    *RCC_IOPENR |= (1U << 2);
+ 800008a:	4b19      	ldr	r3, [pc, #100]	; (80000f0 <main+0x6c>)
+ 800008c:	681b      	ldr	r3, [r3, #0]
+ 800008e:	681a      	ldr	r2, [r3, #0]
+ 8000090:	4b17      	ldr	r3, [pc, #92]	; (80000f0 <main+0x6c>)
+ 8000092:	681b      	ldr	r3, [r3, #0]
+ 8000094:	2104      	movs	r1, #4
+ 8000096:	430a      	orrs	r2, r1
+ 8000098:	601a      	str	r2, [r3, #0]
+
+    /* Setup PC6 for led */
+    *GPIOC_MODER &= ~(uint32_t)(3U << 2*6);
+ 800009a:	4b16      	ldr	r3, [pc, #88]	; (80000f4 <main+0x70>)
+ 800009c:	681b      	ldr	r3, [r3, #0]
+ 800009e:	681a      	ldr	r2, [r3, #0]
+ 80000a0:	4b14      	ldr	r3, [pc, #80]	; (80000f4 <main+0x70>)
+ 80000a2:	681b      	ldr	r3, [r3, #0]
+ 80000a4:	4914      	ldr	r1, [pc, #80]	; (80000f8 <main+0x74>)
+ 80000a6:	400a      	ands	r2, r1
+ 80000a8:	601a      	str	r2, [r3, #0]
+    *GPIOC_MODER |= (1U << 2*6);
+ 80000aa:	4b12      	ldr	r3, [pc, #72]	; (80000f4 <main+0x70>)
+ 80000ac:	681b      	ldr	r3, [r3, #0]
+ 80000ae:	681a      	ldr	r2, [r3, #0]
+ 80000b0:	4b10      	ldr	r3, [pc, #64]	; (80000f4 <main+0x70>)
+ 80000b2:	681b      	ldr	r3, [r3, #0]
+ 80000b4:	2180      	movs	r1, #128	; 0x80
+ 80000b6:	0149      	lsls	r1, r1, #5
+ 80000b8:	430a      	orrs	r2, r1
+ 80000ba:	601a      	str	r2, [r3, #0]
+    *GPIOC_ODR |= (1U << 6);
+ 80000bc:	4b0f      	ldr	r3, [pc, #60]	; (80000fc <main+0x78>)
+ 80000be:	681b      	ldr	r3, [r3, #0]
+ 80000c0:	681a      	ldr	r2, [r3, #0]
+ 80000c2:	4b0e      	ldr	r3, [pc, #56]	; (80000fc <main+0x78>)
+ 80000c4:	681b      	ldr	r3, [r3, #0]
+ 80000c6:	2140      	movs	r1, #64	; 0x40
+ 80000c8:	430a      	orrs	r2, r1
+ 80000ca:	601a      	str	r2, [r3, #0]
+
+    /* Blink led */
+    while(1) {
+        for(volatile uint32_t s=100000; s>0; s--);
+ 80000cc:	4b0c      	ldr	r3, [pc, #48]	; (8000100 <main+0x7c>)
+ 80000ce:	607b      	str	r3, [r7, #4]
+ 80000d0:	e002      	b.n	80000d8 <main+0x54>
+ 80000d2:	687b      	ldr	r3, [r7, #4]
+ 80000d4:	3b01      	subs	r3, #1
+ 80000d6:	607b      	str	r3, [r7, #4]
+ 80000d8:	687b      	ldr	r3, [r7, #4]
+ 80000da:	2b00      	cmp	r3, #0
+ 80000dc:	d1f9      	bne.n	80000d2 <main+0x4e>
+        *GPIOC_ODR ^= (1U << 6);
+ 80000de:	4b07      	ldr	r3, [pc, #28]	; (80000fc <main+0x78>)
+ 80000e0:	681b      	ldr	r3, [r3, #0]
+ 80000e2:	681a      	ldr	r2, [r3, #0]
+ 80000e4:	4b05      	ldr	r3, [pc, #20]	; (80000fc <main+0x78>)
+ 80000e6:	681b      	ldr	r3, [r3, #0]
+ 80000e8:	2140      	movs	r1, #64	; 0x40
+ 80000ea:	404a      	eors	r2, r1
+ 80000ec:	601a      	str	r2, [r3, #0]
+        for(volatile uint32_t s=100000; s>0; s--);
+ 80000ee:	e7ed      	b.n	80000cc <main+0x48>
+ 80000f0:	20000000 	.word	0x20000000
+ 80000f4:	20000008 	.word	0x20000008
+ 80000f8:	ffffcfff 	.word	0xffffcfff
+ 80000fc:	20000004 	.word	0x20000004
+ 8000100:	000186a0 	.word	0x000186a0

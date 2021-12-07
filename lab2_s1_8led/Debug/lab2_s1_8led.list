@@ -1,0 +1,588 @@
+
+lab2_s1_8led.elf:     file format elf32-littlearm
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000001fc  08000000  08000000  00010000  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .init         00000004  080001fc  080001fc  000101fc  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  2 .fini         00000004  08000200  08000200  00010200  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  3 .data         00000000  20000000  20000000  00010204  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  4 .bss          00000000  20000000  20000000  00000000  2**0
+                  ALLOC
+  5 .ARM.attributes 00000028  00000000  00000000  00010204  2**0
+                  CONTENTS, READONLY
+  6 .debug_line   00000128  00000000  00000000  0001022c  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+  7 .debug_info   00000026  00000000  00000000  00010354  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+  8 .debug_abbrev 00000014  00000000  00000000  0001037a  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+  9 .debug_aranges 00000020  00000000  00000000  00010390  2**3
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 10 .debug_str    00000068  00000000  00000000  000103b0  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+
+Disassembly of section .text:
+
+08000000 <vector_table>:
+ 8000000:	20002000 	.word	0x20002000
+ 8000004:	08000021 	.word	0x08000021
+ 8000008:	08000057 	.word	0x08000057
+ 800000c:	08000057 	.word	0x08000057
+ 8000010:	20000000 	.word	0x20000000
+ 8000014:	20000000 	.word	0x20000000
+ 8000018:	20000000 	.word	0x20000000
+ 800001c:	20000000 	.word	0x20000000
+
+08000020 <Reset_Handler>:
+
+/* reset handler */
+.section .text
+Reset_Handler:
+	/* set stack pointer */
+	ldr r0, =_estack
+ 8000020:	4863      	ldr	r0, [pc, #396]	; (80001b0 <stop_led+0xe>)
+	mov sp, r0
+ 8000022:	4685      	mov	sp, r0
+
+	/* initialize data and bss 
+	 * not necessary for rom only code 
+	 * */
+	bl init_data
+ 8000024:	f000 f803 	bl	800002e <init_data>
+	/* call main */
+	bl main
+ 8000028:	f000 f816 	bl	8000058 <main>
+	/* trap if returned */
+	b .
+ 800002c:	e7fe      	b.n	800002c <Reset_Handler+0xc>
+
+0800002e <init_data>:
+/* initialize data and bss sections */
+.section .text
+init_data:
+
+	/* copy rom to ram */
+	ldr r0, =_sdata
+ 800002e:	4861      	ldr	r0, [pc, #388]	; (80001b4 <stop_led+0x12>)
+	ldr r1, =_edata
+ 8000030:	4961      	ldr	r1, [pc, #388]	; (80001b8 <stop_led+0x16>)
+	ldr r2, =_sidata
+ 8000032:	4a62      	ldr	r2, [pc, #392]	; (80001bc <stop_led+0x1a>)
+	movs r3, #0
+ 8000034:	2300      	movs	r3, #0
+	b LoopCopyDataInit
+ 8000036:	e002      	b.n	800003e <LoopCopyDataInit>
+
+08000038 <CopyDataInit>:
+
+	CopyDataInit:
+		ldr r4, [r2, r3]
+ 8000038:	58d4      	ldr	r4, [r2, r3]
+		str r4, [r0, r3]
+ 800003a:	50c4      	str	r4, [r0, r3]
+		adds r3, r3, #4
+ 800003c:	3304      	adds	r3, #4
+
+0800003e <LoopCopyDataInit>:
+
+	LoopCopyDataInit:
+		adds r4, r0, r3
+ 800003e:	18c4      	adds	r4, r0, r3
+		cmp r4, r1
+ 8000040:	428c      	cmp	r4, r1
+		bcc CopyDataInit
+ 8000042:	d3f9      	bcc.n	8000038 <CopyDataInit>
+
+	/* zero bss */
+	ldr r2, =_sbss
+ 8000044:	4a5e      	ldr	r2, [pc, #376]	; (80001c0 <stop_led+0x1e>)
+	ldr r4, =_ebss
+ 8000046:	4c5f      	ldr	r4, [pc, #380]	; (80001c4 <stop_led+0x22>)
+	movs r3, #0
+ 8000048:	2300      	movs	r3, #0
+	b LoopFillZerobss
+ 800004a:	e001      	b.n	8000050 <LoopFillZerobss>
+
+0800004c <FillZerobss>:
+
+	FillZerobss:
+		str  r3, [r2]
+ 800004c:	6013      	str	r3, [r2, #0]
+		adds r2, r2, #4
+ 800004e:	3204      	adds	r2, #4
+
+08000050 <LoopFillZerobss>:
+
+	LoopFillZerobss:
+		cmp r2, r4
+ 8000050:	42a2      	cmp	r2, r4
+		bcc FillZerobss
+ 8000052:	d3fb      	bcc.n	800004c <FillZerobss>
+
+	bx lr
+ 8000054:	4770      	bx	lr
+
+08000056 <Default_Handler>:
+
+
+/* default handler */
+.section .text
+Default_Handler:
+	b Default_Handler
+ 8000056:	e7fe      	b.n	8000056 <Default_Handler>
+
+08000058 <main>:
+
+/* main function */
+.section .text
+main:
+	/* enable GPIO A,C,D clock, bit2 on IOPENR */
+	ldr r6, =RCC_IOPENR
+ 8000058:	4e5b      	ldr	r6, [pc, #364]	; (80001c8 <stop_led+0x26>)
+	ldr r5, [r6]
+ 800005a:	6835      	ldr	r5, [r6, #0]
+	movs r4,  0b00001101
+ 800005c:	240d      	movs	r4, #13
+	orrs r5, r5, r4
+ 800005e:	4325      	orrs	r5, r4
+	str r5, [r6]
+ 8000060:	6035      	str	r5, [r6, #0]
+
+	/* setup A0,1,2,3,4,5,6,7 as output */
+	ldr r6, =GPIOA_MODER
+ 8000062:	4e5a      	ldr	r6, [pc, #360]	; (80001cc <stop_led+0x2a>)
+	ldr r5, [r6]
+ 8000064:	6835      	ldr	r5, [r6, #0]
+	/*00 yaptık */
+	ldr r4, =#0b1111111111111100001111
+ 8000066:	4c5a      	ldr	r4, [pc, #360]	; (80001d0 <stop_led+0x2e>)
+	bics r5, r5, r4
+ 8000068:	43a5      	bics	r5, r4
+
+	ldr r4, =#0b01010101010100000101
+ 800006a:	4c5a      	ldr	r4, [pc, #360]	; (80001d4 <stop_led+0x32>)
+
+	/*kaydettik*/
+	orrs r5, r5, r4
+ 800006c:	4325      	orrs	r5, r4
+	str r5, [r6]
+ 800006e:	6035      	str	r5, [r6, #0]
+
+08000070 <loop>:
+8.led -> d9 -> modder8
+button input->d4->modder10*/
+
+	loop:
+
+		bl button
+ 8000070:	f000 f88e 	bl	8000190 <button>
+		/*error ledini sıfırla*/
+		ldr r6, =GPIOA_ODR
+ 8000074:	4e58      	ldr	r6, [pc, #352]	; (80001d8 <stop_led+0x36>)
+		ldr r5,[r6]
+ 8000076:	6835      	ldr	r5, [r6, #0]
+		movs r4, #0x1
+ 8000078:	2401      	movs	r4, #1
+		lsls r4, #8
+ 800007a:	0224      	lsls	r4, r4, #8
+		bics r5, r5, r4
+ 800007c:	43a5      	bics	r5, r4
+		str r5, [r6]
+ 800007e:	6035      	str	r5, [r6, #0]
+
+		/*------t0---led kapama -------------*/
+		ldr r6, =GPIOA_ODR
+ 8000080:	4e55      	ldr	r6, [pc, #340]	; (80001d8 <stop_led+0x36>)
+		ldr r5,[r6]
+ 8000082:	6835      	ldr	r5, [r6, #0]
+		/*6. pine 1 atandı*/
+		ldr r4, =0b1111110011
+ 8000084:	4c55      	ldr	r4, [pc, #340]	; (80001dc <stop_led+0x3a>)
+		bics r5, r5, r4
+ 8000086:	43a5      	bics	r5, r4
+		str r5, [r6]
+ 8000088:	6035      	str	r5, [r6, #0]
+		ldr r1, =DELAY_CONST
+ 800008a:	4955      	ldr	r1, [pc, #340]	; (80001e0 <stop_led+0x3e>)
+		bl delay
+ 800008c:	f000 f87d 	bl	800018a <delay>
+
+		bl button
+ 8000090:	f000 f87e 	bl	8000190 <button>
+		/*error ledini sıfırla*/
+		ldr r6, =GPIOA_ODR
+ 8000094:	4e50      	ldr	r6, [pc, #320]	; (80001d8 <stop_led+0x36>)
+		ldr r5,[r6]
+ 8000096:	6835      	ldr	r5, [r6, #0]
+		movs r4, #0x1
+ 8000098:	2401      	movs	r4, #1
+		lsls r4, #8
+ 800009a:	0224      	lsls	r4, r4, #8
+		bics r5, r5, r4
+ 800009c:	43a5      	bics	r5, r4
+		str r5, [r6]
+ 800009e:	6035      	str	r5, [r6, #0]
+
+
+		/*----------------t1 led yakma---------------*/
+		/*veriler alındı*/
+		ldr r6, =GPIOA_ODR
+ 80000a0:	4e4d      	ldr	r6, [pc, #308]	; (80001d8 <stop_led+0x36>)
+		ldr r5,[r6]
+ 80000a2:	6835      	ldr	r5, [r6, #0]
+		movs r4, #0x1
+ 80000a4:	2401      	movs	r4, #1
+		orrs r5, r5, r4
+ 80000a6:	4325      	orrs	r5, r4
+		str r5, [r6]
+ 80000a8:	6035      	str	r5, [r6, #0]
+		ldr r1, =DELAY_CONST
+ 80000aa:	494d      	ldr	r1, [pc, #308]	; (80001e0 <stop_led+0x3e>)
+		bl delay
+ 80000ac:	f000 f86d 	bl	800018a <delay>
+
+		bl button
+ 80000b0:	f000 f86e 	bl	8000190 <button>
+		/*error ledini sıfırla*/
+		ldr r6, =GPIOA_ODR
+ 80000b4:	4e48      	ldr	r6, [pc, #288]	; (80001d8 <stop_led+0x36>)
+		ldr r5,[r6]
+ 80000b6:	6835      	ldr	r5, [r6, #0]
+		movs r4, #0x1
+ 80000b8:	2401      	movs	r4, #1
+		lsls r4, #8
+ 80000ba:	0224      	lsls	r4, r4, #8
+		bics r5, r5, r4
+ 80000bc:	43a5      	bics	r5, r4
+		str r5, [r6]
+ 80000be:	6035      	str	r5, [r6, #0]
+
+		/*---------------t2 led yakma--------------------*/
+				/*veriler alındı*/
+		ldr r6, =GPIOA_ODR
+ 80000c0:	4e45      	ldr	r6, [pc, #276]	; (80001d8 <stop_led+0x36>)
+		ldr r5,[r6]
+ 80000c2:	6835      	ldr	r5, [r6, #0]
+		ldr r4, =0b0001000011
+ 80000c4:	4c47      	ldr	r4, [pc, #284]	; (80001e4 <stop_led+0x42>)
+		orrs r5, r5, r4
+ 80000c6:	4325      	orrs	r5, r4
+		str r5, [r6]
+ 80000c8:	6035      	str	r5, [r6, #0]
+		ldr r1, =DELAY_CONST
+ 80000ca:	4945      	ldr	r1, [pc, #276]	; (80001e0 <stop_led+0x3e>)
+		bl delay
+ 80000cc:	f000 f85d 	bl	800018a <delay>
+
+
+
+		bl button
+ 80000d0:	f000 f85e 	bl	8000190 <button>
+		/*error ledini sıfırla*/
+		ldr r6, =GPIOA_ODR
+ 80000d4:	4e40      	ldr	r6, [pc, #256]	; (80001d8 <stop_led+0x36>)
+		ldr r5,[r6]
+ 80000d6:	6835      	ldr	r5, [r6, #0]
+		movs r4, #0x1
+ 80000d8:	2401      	movs	r4, #1
+		lsls r4, #8
+ 80000da:	0224      	lsls	r4, r4, #8
+		bics r5, r5, r4
+ 80000dc:	43a5      	bics	r5, r4
+		str r5, [r6]
+ 80000de:	6035      	str	r5, [r6, #0]
+
+
+		/*--------t3 led yakma------------*/
+		/*veriler alındı*/
+		ldr r6, =GPIOA_ODR
+ 80000e0:	4e3d      	ldr	r6, [pc, #244]	; (80001d8 <stop_led+0x36>)
+		ldr r5,[r6]
+ 80000e2:	6835      	ldr	r5, [r6, #0]
+		ldr r4, =0b0011010011
+ 80000e4:	4c40      	ldr	r4, [pc, #256]	; (80001e8 <stop_led+0x46>)
+		orrs r5, r5, r4
+ 80000e6:	4325      	orrs	r5, r4
+		str r5, [r6]
+ 80000e8:	6035      	str	r5, [r6, #0]
+		ldr r1, =DELAY_CONST
+ 80000ea:	493d      	ldr	r1, [pc, #244]	; (80001e0 <stop_led+0x3e>)
+		bl delay
+ 80000ec:	f000 f84d 	bl	800018a <delay>
+
+		bl button
+ 80000f0:	f000 f84e 	bl	8000190 <button>
+		/*error ledini sıfırla*/
+		ldr r6, =GPIOA_ODR
+ 80000f4:	4e38      	ldr	r6, [pc, #224]	; (80001d8 <stop_led+0x36>)
+		ldr r5,[r6]
+ 80000f6:	6835      	ldr	r5, [r6, #0]
+		movs r4, #0x1
+ 80000f8:	2401      	movs	r4, #1
+		lsls r4, #8
+ 80000fa:	0224      	lsls	r4, r4, #8
+		bics r5, r5, r4
+ 80000fc:	43a5      	bics	r5, r4
+		str r5, [r6]
+ 80000fe:	6035      	str	r5, [r6, #0]
+
+
+
+		/*-------------t4 led yakma---------------------*/
+		/*veriler alındı*/
+		ldr r6, =GPIOA_ODR
+ 8000100:	4e35      	ldr	r6, [pc, #212]	; (80001d8 <stop_led+0x36>)
+		ldr r5,[r6]
+ 8000102:	6835      	ldr	r5, [r6, #0]
+		ldr r4, =0b1011110011
+ 8000104:	4c39      	ldr	r4, [pc, #228]	; (80001ec <stop_led+0x4a>)
+		orrs r5, r5, r4
+ 8000106:	4325      	orrs	r5, r4
+		str r5, [r6]
+ 8000108:	6035      	str	r5, [r6, #0]
+		ldr r1, =DELAY_CONST
+ 800010a:	4935      	ldr	r1, [pc, #212]	; (80001e0 <stop_led+0x3e>)
+		bl delay
+ 800010c:	f000 f83d 	bl	800018a <delay>
+
+		bl button
+ 8000110:	f000 f83e 	bl	8000190 <button>
+		/*error ledini sıfırla*/
+		ldr r6, =GPIOA_ODR
+ 8000114:	4e30      	ldr	r6, [pc, #192]	; (80001d8 <stop_led+0x36>)
+		ldr r5,[r6]
+ 8000116:	6835      	ldr	r5, [r6, #0]
+		movs r4, #0x1
+ 8000118:	2401      	movs	r4, #1
+		lsls r4, #8
+ 800011a:	0224      	lsls	r4, r4, #8
+		bics r5, r5, r4
+ 800011c:	43a5      	bics	r5, r4
+		str r5, [r6]
+ 800011e:	6035      	str	r5, [r6, #0]
+
+
+
+		/*--------t5 led yakma------------*/
+		/*veriler alındı*/
+		ldr r6, =GPIOA_ODR
+ 8000120:	4e2d      	ldr	r6, [pc, #180]	; (80001d8 <stop_led+0x36>)
+		ldr r5,[r6]
+ 8000122:	6835      	ldr	r5, [r6, #0]
+		ldr r4, =#0b1111111111
+ 8000124:	4c32      	ldr	r4, [pc, #200]	; (80001f0 <stop_led+0x4e>)
+		bics r5, r5, r4
+ 8000126:	43a5      	bics	r5, r4
+		ldr r4, =0b0011010011
+ 8000128:	4c2f      	ldr	r4, [pc, #188]	; (80001e8 <stop_led+0x46>)
+		orrs r5, r5, r4
+ 800012a:	4325      	orrs	r5, r4
+		str r5, [r6]
+ 800012c:	6035      	str	r5, [r6, #0]
+		ldr r1, =DELAY_CONST
+ 800012e:	492c      	ldr	r1, [pc, #176]	; (80001e0 <stop_led+0x3e>)
+		bl delay
+ 8000130:	f000 f82b 	bl	800018a <delay>
+
+		bl button
+ 8000134:	f000 f82c 	bl	8000190 <button>
+		/*error ledini sıfırla*/
+		ldr r6, =GPIOA_ODR
+ 8000138:	4e27      	ldr	r6, [pc, #156]	; (80001d8 <stop_led+0x36>)
+		ldr r5,[r6]
+ 800013a:	6835      	ldr	r5, [r6, #0]
+		movs r4, #0x1
+ 800013c:	2401      	movs	r4, #1
+		lsls r4, #8
+ 800013e:	0224      	lsls	r4, r4, #8
+		bics r5, r5, r4
+ 8000140:	43a5      	bics	r5, r4
+		str r5, [r6]
+ 8000142:	6035      	str	r5, [r6, #0]
+
+
+
+		/*---------------t6 led yakma--------------------*/
+				/*veriler alındı*/
+		ldr r6, =GPIOA_ODR
+ 8000144:	4e24      	ldr	r6, [pc, #144]	; (80001d8 <stop_led+0x36>)
+		ldr r5,[r6]
+ 8000146:	6835      	ldr	r5, [r6, #0]
+		ldr r4, =#0b1111111111
+ 8000148:	4c29      	ldr	r4, [pc, #164]	; (80001f0 <stop_led+0x4e>)
+		bics r5, r5, r4
+ 800014a:	43a5      	bics	r5, r4
+		ldr r4, =0b0001000011
+ 800014c:	4c25      	ldr	r4, [pc, #148]	; (80001e4 <stop_led+0x42>)
+		orrs r5, r5, r4
+ 800014e:	4325      	orrs	r5, r4
+		str r5, [r6]
+ 8000150:	6035      	str	r5, [r6, #0]
+		ldr r1, =DELAY_CONST
+ 8000152:	4923      	ldr	r1, [pc, #140]	; (80001e0 <stop_led+0x3e>)
+		bl delay
+ 8000154:	f000 f819 	bl	800018a <delay>
+
+
+		bl button
+ 8000158:	f000 f81a 	bl	8000190 <button>
+		/*error ledini sıfırla*/
+		ldr r6, =GPIOA_ODR
+ 800015c:	4e1e      	ldr	r6, [pc, #120]	; (80001d8 <stop_led+0x36>)
+		ldr r5,[r6]
+ 800015e:	6835      	ldr	r5, [r6, #0]
+		movs r4, #0x1
+ 8000160:	2401      	movs	r4, #1
+		lsls r4, #8
+ 8000162:	0224      	lsls	r4, r4, #8
+		bics r5, r5, r4
+ 8000164:	43a5      	bics	r5, r4
+		str r5, [r6]
+ 8000166:	6035      	str	r5, [r6, #0]
+
+
+
+		/*----------------t7 led yakma---------------*/
+		/*veriler alındı*/
+		ldr r6, =GPIOA_ODR
+ 8000168:	4e1b      	ldr	r6, [pc, #108]	; (80001d8 <stop_led+0x36>)
+		ldr r5,[r6]
+ 800016a:	6835      	ldr	r5, [r6, #0]
+		ldr r4, =#0b1111111111
+ 800016c:	4c20      	ldr	r4, [pc, #128]	; (80001f0 <stop_led+0x4e>)
+		bics r5, r5, r4
+ 800016e:	43a5      	bics	r5, r4
+		movs r4, #0x1
+ 8000170:	2401      	movs	r4, #1
+		orrs r5, r5, r4
+ 8000172:	4325      	orrs	r5, r4
+		str r5, [r6]
+ 8000174:	6035      	str	r5, [r6, #0]
+		ldr r1, =DELAY_CONST
+ 8000176:	491a      	ldr	r1, [pc, #104]	; (80001e0 <stop_led+0x3e>)
+		bl delay
+ 8000178:	f000 f807 	bl	800018a <delay>
+
+		/*error ledini sıfırla*/
+		ldr r6, =GPIOA_ODR
+ 800017c:	4e16      	ldr	r6, [pc, #88]	; (80001d8 <stop_led+0x36>)
+		ldr r5,[r6]
+ 800017e:	6835      	ldr	r5, [r6, #0]
+		movs r4, #0x1
+ 8000180:	2401      	movs	r4, #1
+		lsls r4, #8
+ 8000182:	0224      	lsls	r4, r4, #8
+		bics r5, r5, r4
+ 8000184:	43a5      	bics	r5, r4
+		str r5, [r6]
+ 8000186:	6035      	str	r5, [r6, #0]
+
+
+		b loop
+ 8000188:	e772      	b.n	8000070 <loop>
+
+0800018a <delay>:
+
+		delay:
+		 subs r1, r1, #1 /*1. registerdaki sayıyı 1 azalt*/
+ 800018a:	3901      	subs	r1, #1
+		 bne delay  //branch not equal than
+ 800018c:	d1fd      	bne.n	800018a <delay>
+		 bx lr      // branch equal
+ 800018e:	4770      	bx	lr
+
+08000190 <button>:
+
+		button:
+		ldr r6, =GPIOA_IDR
+ 8000190:	4e18      	ldr	r6, [pc, #96]	; (80001f4 <stop_led+0x52>)
+		ldr r5, [r6]
+ 8000192:	6835      	ldr	r5, [r6, #0]
+		ldr r4, =#0b111101111111111
+ 8000194:	4c18      	ldr	r4, [pc, #96]	; (80001f8 <stop_led+0x56>)
+		bics r5, r5, r4
+ 8000196:	43a5      	bics	r5, r4
+		movs r4, #1
+ 8000198:	2401      	movs	r4, #1
+		lsls r4, #10
+ 800019a:	02a4      	lsls	r4, r4, #10
+
+		cmp r5, r4
+ 800019c:	42a5      	cmp	r5, r4
+		beq stop_led
+ 800019e:	d000      	beq.n	80001a2 <stop_led>
+		bx lr
+ 80001a0:	4770      	bx	lr
+
+080001a2 <stop_led>:
+
+		stop_led:
+		ldr r6, =GPIOA_ODR
+ 80001a2:	4e0d      	ldr	r6, [pc, #52]	; (80001d8 <stop_led+0x36>)
+		ldr r5,[r6]
+ 80001a4:	6835      	ldr	r5, [r6, #0]
+		movs r4, #0x1
+ 80001a6:	2401      	movs	r4, #1
+		lsls r4, #8
+ 80001a8:	0224      	lsls	r4, r4, #8
+		orrs r5, r5, r4
+ 80001aa:	4325      	orrs	r5, r4
+		str r5, [r6]
+ 80001ac:	6035      	str	r5, [r6, #0]
+		b button
+ 80001ae:	e7ef      	b.n	8000190 <button>
+	ldr r0, =_estack
+ 80001b0:	20002000 	.word	0x20002000
+	ldr r0, =_sdata
+ 80001b4:	20000000 	.word	0x20000000
+	ldr r1, =_edata
+ 80001b8:	20000000 	.word	0x20000000
+	ldr r2, =_sidata
+ 80001bc:	08000204 	.word	0x08000204
+	ldr r2, =_sbss
+ 80001c0:	20000000 	.word	0x20000000
+	ldr r4, =_ebss
+ 80001c4:	20000000 	.word	0x20000000
+	ldr r6, =RCC_IOPENR
+ 80001c8:	40021034 	.word	0x40021034
+	ldr r6, =GPIOA_MODER
+ 80001cc:	50000000 	.word	0x50000000
+	ldr r4, =#0b1111111111111100001111
+ 80001d0:	003fff0f 	.word	0x003fff0f
+	ldr r4, =#0b01010101010100000101
+ 80001d4:	00055505 	.word	0x00055505
+		ldr r6, =GPIOA_ODR
+ 80001d8:	50000014 	.word	0x50000014
+		ldr r4, =0b1111110011
+ 80001dc:	000003f3 	.word	0x000003f3
+		ldr r1, =DELAY_CONST
+ 80001e0:	00100000 	.word	0x00100000
+		ldr r4, =0b0001000011
+ 80001e4:	00000043 	.word	0x00000043
+		ldr r4, =0b0011010011
+ 80001e8:	000000d3 	.word	0x000000d3
+		ldr r4, =0b1011110011
+ 80001ec:	000002f3 	.word	0x000002f3
+		ldr r4, =#0b1111111111
+ 80001f0:	000003ff 	.word	0x000003ff
+		ldr r6, =GPIOA_IDR
+ 80001f4:	50000010 	.word	0x50000010
+		ldr r4, =#0b111101111111111
+ 80001f8:	00007bff 	.word	0x00007bff
+
+Disassembly of section .init:
+
+080001fc <_init>:
+ 80001fc:	b5f8      	push	{r3, r4, r5, r6, r7, lr}
+ 80001fe:	46c0      	nop			; (mov r8, r8)
+
+Disassembly of section .fini:
+
+08000200 <_fini>:
+ 8000200:	b5f8      	push	{r3, r4, r5, r6, r7, lr}
+ 8000202:	46c0      	nop			; (mov r8, r8)

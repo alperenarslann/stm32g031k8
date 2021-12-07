@@ -1,0 +1,4 @@
+main.c:48:6:_init_data	16	static
+main.c:64:6:Reset_Handler	8	static
+main.c:73:6:Default_Handler	8	static
+main.c:75:5:main	16	static

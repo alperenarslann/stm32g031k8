@@ -1,0 +1,270 @@
+
+fsm_led_yakma_C_without_lib.elf:     file format elf32-littlearm
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         00000168  08000000  08000000  00010000  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000020  20000000  08000168  00020000  2**2
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .bss          00000000  20000020  08000188  00000000  2**0
+                  ALLOC
+  3 .debug_info   00000312  00000000  00000000  00020020  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+  4 .debug_abbrev 0000017a  00000000  00000000  00020332  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+  5 .debug_aranges 00000058  00000000  00000000  000204ac  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+  6 .debug_ranges 00000048  00000000  00000000  00020504  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+  7 .debug_macro  00000afb  00000000  00000000  0002054c  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+  8 .debug_line   00000191  00000000  00000000  00021047  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+  9 .debug_str    000030be  00000000  00000000  000211d8  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 10 .comment      00000053  00000000  00000000  00024296  2**0
+                  CONTENTS, READONLY
+ 11 .ARM.attributes 0000002c  00000000  00000000  000242e9  2**0
+                  CONTENTS, READONLY
+ 12 .debug_frame  00000100  00000000  00000000  00024318  2**2
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+
+Disassembly of section .text:
+
+08000000 <vector_table>:
+ 8000000:	00 20 00 20 71 00 00 08 7f 00 00 08 7f 00 00 08     . . q...........
+
+08000010 <_init_data>:
+    Default_Handler    /* 0x00C HardFault     */
+    /* rest of the interrupts should go here  */
+};
+
+/* initialize data and bss sections */
+void _init_data(void) {
+ 8000010:	b580      	push	{r7, lr}
+ 8000012:	b082      	sub	sp, #8
+ 8000014:	af00      	add	r7, sp, #0
+    /* these are symbols from linker script */
+    extern unsigned long __etext, __data_start__, __data_end__, __bss_start__, __bss_end__;
+    unsigned long *src = &__etext;
+ 8000016:	4b11      	ldr	r3, [pc, #68]	; (800005c <_init_data+0x4c>)
+ 8000018:	607b      	str	r3, [r7, #4]
+    unsigned long *dst = &__data_start__;
+ 800001a:	4b11      	ldr	r3, [pc, #68]	; (8000060 <_init_data+0x50>)
+ 800001c:	603b      	str	r3, [r7, #0]
+
+    /* ROM has data at end of text. copy it */
+    while (dst < &__data_end__)
+ 800001e:	e007      	b.n	8000030 <_init_data+0x20>
+        *dst++ = *src++;
+ 8000020:	687a      	ldr	r2, [r7, #4]
+ 8000022:	1d13      	adds	r3, r2, #4
+ 8000024:	607b      	str	r3, [r7, #4]
+ 8000026:	683b      	ldr	r3, [r7, #0]
+ 8000028:	1d19      	adds	r1, r3, #4
+ 800002a:	6039      	str	r1, [r7, #0]
+ 800002c:	6812      	ldr	r2, [r2, #0]
+ 800002e:	601a      	str	r2, [r3, #0]
+    while (dst < &__data_end__)
+ 8000030:	683a      	ldr	r2, [r7, #0]
+ 8000032:	4b0c      	ldr	r3, [pc, #48]	; (8000064 <_init_data+0x54>)
+ 8000034:	429a      	cmp	r2, r3
+ 8000036:	d3f3      	bcc.n	8000020 <_init_data+0x10>
+
+    /* zero bss */
+    for (dst = &__bss_start__; dst< &__bss_end__; dst++)
+ 8000038:	4b0b      	ldr	r3, [pc, #44]	; (8000068 <_init_data+0x58>)
+ 800003a:	603b      	str	r3, [r7, #0]
+ 800003c:	e005      	b.n	800004a <_init_data+0x3a>
+        *dst = 0;
+ 800003e:	683b      	ldr	r3, [r7, #0]
+ 8000040:	2200      	movs	r2, #0
+ 8000042:	601a      	str	r2, [r3, #0]
+    for (dst = &__bss_start__; dst< &__bss_end__; dst++)
+ 8000044:	683b      	ldr	r3, [r7, #0]
+ 8000046:	3304      	adds	r3, #4
+ 8000048:	603b      	str	r3, [r7, #0]
+ 800004a:	683a      	ldr	r2, [r7, #0]
+ 800004c:	4b07      	ldr	r3, [pc, #28]	; (800006c <_init_data+0x5c>)
+ 800004e:	429a      	cmp	r2, r3
+ 8000050:	d3f5      	bcc.n	800003e <_init_data+0x2e>
+}
+ 8000052:	46c0      	nop			; (mov r8, r8)
+ 8000054:	46c0      	nop			; (mov r8, r8)
+ 8000056:	46bd      	mov	sp, r7
+ 8000058:	b002      	add	sp, #8
+ 800005a:	bd80      	pop	{r7, pc}
+ 800005c:	08000168 	.word	0x08000168
+ 8000060:	20000000 	.word	0x20000000
+ 8000064:	20000020 	.word	0x20000020
+ 8000068:	20000020 	.word	0x20000020
+ 800006c:	20000020 	.word	0x20000020
+
+08000070 <Reset_Handler>:
+
+/* Entry point, calls main after prologue */
+void Reset_Handler(void) {
+ 8000070:	b580      	push	{r7, lr}
+ 8000072:	af00      	add	r7, sp, #0
+    _init_data();
+ 8000074:	f7ff ffcc 	bl	8000010 <_init_data>
+     main();
+ 8000078:	f000 f86e 	bl	8000158 <main>
+    for(;;);
+ 800007c:	e7fe      	b.n	800007c <Reset_Handler+0xc>
+
+0800007e <Default_Handler>:
+}
+
+/* All faults will end up here, since we did not define the rest of the vector
+ * table, the other exceptions/interrupts will most likely crash the program.
+ */
+void Default_Handler(void) { for(;;); }
+ 800007e:	b580      	push	{r7, lr}
+ 8000080:	af00      	add	r7, sp, #0
+ 8000082:	e7fe      	b.n	8000082 <Default_Handler+0x4>
+
+08000084 <setup>:
+
+enum{
+	mod0 = 0,mod1 = 1,mod2 = 2,mod3 = 3,mod4 = 4,mod5 = 5
+};
+
+void setup(){
+ 8000084:	b580      	push	{r7, lr}
+ 8000086:	af00      	add	r7, sp, #0
+    /* Enable GPIOC and GPIOA clock */
+    *RCC_IOPENR |= (0b00101);
+ 8000088:	4b29      	ldr	r3, [pc, #164]	; (8000130 <setup+0xac>)
+ 800008a:	681b      	ldr	r3, [r3, #0]
+ 800008c:	681a      	ldr	r2, [r3, #0]
+ 800008e:	4b28      	ldr	r3, [pc, #160]	; (8000130 <setup+0xac>)
+ 8000090:	681b      	ldr	r3, [r3, #0]
+ 8000092:	2105      	movs	r1, #5
+ 8000094:	430a      	orrs	r2, r1
+ 8000096:	601a      	str	r2, [r3, #0]
+	/* Setup AC6 for led */
+    *GPIOA_MODER &= ~(uint32_t)(0b11 << 2*6);
+ 8000098:	4b26      	ldr	r3, [pc, #152]	; (8000134 <setup+0xb0>)
+ 800009a:	681b      	ldr	r3, [r3, #0]
+ 800009c:	681a      	ldr	r2, [r3, #0]
+ 800009e:	4b25      	ldr	r3, [pc, #148]	; (8000134 <setup+0xb0>)
+ 80000a0:	681b      	ldr	r3, [r3, #0]
+ 80000a2:	4925      	ldr	r1, [pc, #148]	; (8000138 <setup+0xb4>)
+ 80000a4:	400a      	ands	r2, r1
+ 80000a6:	601a      	str	r2, [r3, #0]
+    *GPIOA_MODER |= (1U << 2*6);
+ 80000a8:	4b22      	ldr	r3, [pc, #136]	; (8000134 <setup+0xb0>)
+ 80000aa:	681b      	ldr	r3, [r3, #0]
+ 80000ac:	681a      	ldr	r2, [r3, #0]
+ 80000ae:	4b21      	ldr	r3, [pc, #132]	; (8000134 <setup+0xb0>)
+ 80000b0:	681b      	ldr	r3, [r3, #0]
+ 80000b2:	2180      	movs	r1, #128	; 0x80
+ 80000b4:	0149      	lsls	r1, r1, #5
+ 80000b6:	430a      	orrs	r2, r1
+ 80000b8:	601a      	str	r2, [r3, #0]
+
+    /*setup Button input pin*/
+
+    *GPIOA_MODER &= ~(uint32_t)(0b11 << 2*7);//set PA_7 as input mode
+ 80000ba:	4b1e      	ldr	r3, [pc, #120]	; (8000134 <setup+0xb0>)
+ 80000bc:	681b      	ldr	r3, [r3, #0]
+ 80000be:	681a      	ldr	r2, [r3, #0]
+ 80000c0:	4b1c      	ldr	r3, [pc, #112]	; (8000134 <setup+0xb0>)
+ 80000c2:	681b      	ldr	r3, [r3, #0]
+ 80000c4:	491d      	ldr	r1, [pc, #116]	; (800013c <setup+0xb8>)
+ 80000c6:	400a      	ands	r2, r1
+ 80000c8:	601a      	str	r2, [r3, #0]
+    *GPIOA_IDR = *GPIOA_IDR | (uint32_t)(0b111 < 2);
+ 80000ca:	4b1d      	ldr	r3, [pc, #116]	; (8000140 <setup+0xbc>)
+ 80000cc:	681a      	ldr	r2, [r3, #0]
+ 80000ce:	4b1c      	ldr	r3, [pc, #112]	; (8000140 <setup+0xbc>)
+ 80000d0:	681b      	ldr	r3, [r3, #0]
+ 80000d2:	6812      	ldr	r2, [r2, #0]
+ 80000d4:	601a      	str	r2, [r3, #0]
+
+    *RCC_APBENR2 |=  0b1 << 0;//open SYSCFGEN for use external interrupts
+ 80000d6:	4b1b      	ldr	r3, [pc, #108]	; (8000144 <setup+0xc0>)
+ 80000d8:	681b      	ldr	r3, [r3, #0]
+ 80000da:	681a      	ldr	r2, [r3, #0]
+ 80000dc:	4b19      	ldr	r3, [pc, #100]	; (8000144 <setup+0xc0>)
+ 80000de:	681b      	ldr	r3, [r3, #0]
+ 80000e0:	2101      	movs	r1, #1
+ 80000e2:	430a      	orrs	r2, r1
+ 80000e4:	601a      	str	r2, [r3, #0]
+    *EXTI_RTSR1  |=  0b1 << 7; //enable interrupt on pa7 pin
+ 80000e6:	4b18      	ldr	r3, [pc, #96]	; (8000148 <setup+0xc4>)
+ 80000e8:	681b      	ldr	r3, [r3, #0]
+ 80000ea:	681a      	ldr	r2, [r3, #0]
+ 80000ec:	4b16      	ldr	r3, [pc, #88]	; (8000148 <setup+0xc4>)
+ 80000ee:	681b      	ldr	r3, [r3, #0]
+ 80000f0:	2180      	movs	r1, #128	; 0x80
+ 80000f2:	430a      	orrs	r2, r1
+ 80000f4:	601a      	str	r2, [r3, #0]
+    *EXTI_EXTICR4|=  0x2 << 8;
+ 80000f6:	4b15      	ldr	r3, [pc, #84]	; (800014c <setup+0xc8>)
+ 80000f8:	681b      	ldr	r3, [r3, #0]
+ 80000fa:	681a      	ldr	r2, [r3, #0]
+ 80000fc:	4b13      	ldr	r3, [pc, #76]	; (800014c <setup+0xc8>)
+ 80000fe:	681b      	ldr	r3, [r3, #0]
+ 8000100:	2180      	movs	r1, #128	; 0x80
+ 8000102:	0089      	lsls	r1, r1, #2
+ 8000104:	430a      	orrs	r2, r1
+ 8000106:	601a      	str	r2, [r3, #0]
+    *EXTI_IMR1   |=  0b1 << 7;//unmask exti 7
+ 8000108:	4b11      	ldr	r3, [pc, #68]	; (8000150 <setup+0xcc>)
+ 800010a:	681b      	ldr	r3, [r3, #0]
+ 800010c:	681a      	ldr	r2, [r3, #0]
+ 800010e:	4b10      	ldr	r3, [pc, #64]	; (8000150 <setup+0xcc>)
+ 8000110:	681b      	ldr	r3, [r3, #0]
+ 8000112:	2180      	movs	r1, #128	; 0x80
+ 8000114:	430a      	orrs	r2, r1
+ 8000116:	601a      	str	r2, [r3, #0]
+
+    *NVIC_ISER   |= 0b1 << 7;
+ 8000118:	4b0e      	ldr	r3, [pc, #56]	; (8000154 <setup+0xd0>)
+ 800011a:	681b      	ldr	r3, [r3, #0]
+ 800011c:	681a      	ldr	r2, [r3, #0]
+ 800011e:	4b0d      	ldr	r3, [pc, #52]	; (8000154 <setup+0xd0>)
+ 8000120:	681b      	ldr	r3, [r3, #0]
+ 8000122:	2180      	movs	r1, #128	; 0x80
+ 8000124:	430a      	orrs	r2, r1
+ 8000126:	601a      	str	r2, [r3, #0]
+
+}
+ 8000128:	46c0      	nop			; (mov r8, r8)
+ 800012a:	46bd      	mov	sp, r7
+ 800012c:	bd80      	pop	{r7, pc}
+ 800012e:	46c0      	nop			; (mov r8, r8)
+ 8000130:	20000000 	.word	0x20000000
+ 8000134:	20000008 	.word	0x20000008
+ 8000138:	ffffcfff 	.word	0xffffcfff
+ 800013c:	ffff3fff 	.word	0xffff3fff
+ 8000140:	2000000c 	.word	0x2000000c
+ 8000144:	20000004 	.word	0x20000004
+ 8000148:	20000010 	.word	0x20000010
+ 800014c:	20000018 	.word	0x20000018
+ 8000150:	20000014 	.word	0x20000014
+ 8000154:	2000001c 	.word	0x2000001c
+
+08000158 <main>:
+	states(mod3);
+	*EXTI_RPR1 |= 0xFFFF << 0;
+}
+
+
+int main(void) {
+ 8000158:	b580      	push	{r7, lr}
+ 800015a:	b082      	sub	sp, #8
+ 800015c:	af00      	add	r7, sp, #0
+	setup();
+ 800015e:	f7ff ff91 	bl	8000084 <setup>
+	volatile unsigned int mod = mod2;
+ 8000162:	2302      	movs	r3, #2
+ 8000164:	607b      	str	r3, [r7, #4]
+	uint32_t deneme;
+
+
+	while(1){
+ 8000166:	e7fe      	b.n	8000166 <main+0xe>
