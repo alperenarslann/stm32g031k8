@@ -13,13 +13,14 @@
 
 void reset(){
 
-	GPIOB->ODR &= ~(1U << 2);	//reset  d7
-	GPIOB->ODR &= ~(1U << 8);	//reset  d8
-	GPIOB->ODR &= ~(1U << 5);	//reset  d11
 	GPIOB->ODR &= ~(1U << 4);	//reset  d12
-	GPIOA->ODR &= ~(1U << 1);	//reset  a1
-	GPIOA->ODR &= ~(1U << 11);	//reset  a5
+	GPIOB->ODR &= ~(1U << 5);	//reset  d11
+	GPIOA->ODR &= ~(1U << 8);	//reset  d9
+	GPIOB->ODR &= ~(1U << 8);	//reset  d8
+	GPIOA->ODR &= ~(1U << 4);	//reset  a2
 	GPIOA->ODR &= ~(1U << 6);	//reset  a6
+	GPIOA->ODR &= ~(1U << 7);	//reset  a7
+
 }
 
 
@@ -43,25 +44,26 @@ int main(void) {
 	openClock('B');
 
 	/*configure 7 segment pins*/
-	setMode('A',1,'O');
+	setMode('A',8,'O');
 	setMode('A',4,'O');
 	setMode('A',5,'O');
 	setMode('A',12,'O');
-	setMode('A',11,'O');
 	setMode('A',6,'O');
-	setMode('B',8,'O');
-	setMode('A',8,'O');
-	setMode('B',9,'O');
-	setMode('B',5,'O');
+	setMode('A',7,'O');
+	setMode('A',11,'O');
+
 	setMode('B',4,'O');
-	setMode('B',2,'O');
+	setMode('B',5,'O');
+	setMode('B',8,'O');
+	setMode('B',9,'O');
+
 
 
 	//set ssd digits low as initial to open all digits
-	GPIOA->ODR &= ~(1U << 12);	//set  a4 to 1
-	GPIOA->ODR &= ~(1U << 5);	//set  a3 to 1
-	GPIOA->ODR &= ~(1U << 4);	//set  a2 to 1
-	GPIOB->ODR &= ~(1U << 9);	//set  d10 to 1
+	GPIOA->ODR |= (1U << 11);	//set  a5
+	GPIOA->ODR |= (1U << 12);	//set  a4
+	GPIOA->ODR |= (1U << 5);	//set  a3
+	GPIOB->ODR |= (1U << 9);	//set  d10
 
 
 
@@ -89,7 +91,6 @@ int main(void) {
 */
 
 
-
 while(1){
 /*
 	if((GPIOA->IDR >> 8) & 1 ){
@@ -100,7 +101,7 @@ while(1){
 	}
 */
 
-	GPIOA->ODR &= ~(1U << 7);
+//	GPIOA->ODR &= ~(1U << 7);
 
 }
 

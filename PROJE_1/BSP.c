@@ -369,59 +369,145 @@ void set_sysclk_to_64(){ 	//torigari cindari???
 /*Interrupts*/
 void EXTI0_1_IRQHandler(void){
 
+	GPIOB->ODR &= ~(1U << 9);	//reset  d10
 
-if((GPIOB->IDR >> 0) & 1){
-	clear_rows_keypad();
-	//try for each keypad rows
-
-	GPIOB->ODR |= (1U << 6); //open first row
 	if((GPIOB->IDR >> 0) & 1){
-		ssd_output(3);
+		clear_rows_keypad();
+		//try for each keypad rows
+
+		GPIOB->ODR |= (1U << 6); //open first row
+		if((GPIOB->IDR >> 0) & 1){
+
+
+			print_digit(3);
+
+
+
+		}
+		GPIOB->ODR &= ~(1U << 6); //close first row
+
+
+		GPIOB->ODR |= (1U << 7); //open second row
+		if((GPIOB->IDR >> 0) & 1){
+
+
+			print_digit(6);
+
+
+
+
+		}
+		GPIOB->ODR &= ~(1U << 7); //close second row
+
+
+
+		GPIOA->ODR |= (1U << 15); //open third row
+		if((GPIOB->IDR >> 0) & 1){
+
+
+			print_digit(9);
+		}
+
+
+		GPIOA->ODR &= ~(1U << 15); //close third row
+
+
+
+		GPIOB->ODR |= (1U << 1); //open fourth row
+		if((GPIOB->IDR >> 0) & 1){
+
+
+			print_digit(10);
+		}
+
+
+		GPIOB->ODR &= ~(1U << 1); //close fourth row
+
+		EXTI-> RPR1 |= (1 << 0); //clear pending bit
+		set_rows_keypad();
+
 	}
-	GPIOB->ODR &= ~(1U << 6); //close first row
 
 
-	GPIOB->ODR |= (1U << 7); //open second row
-	if((GPIOB->IDR >> 0) & 1){
-		ssd_output(6);
+
+
+
+	if((GPIOA->IDR >> 1) & 1){
+		clear_rows_keypad();
+		//try for each keypad rows
+
+		GPIOB->ODR |= (1U << 6); //open first row
+		if((GPIOA->IDR >> 1) & 1){
+
+
+
+			print_digit(2);
+
+
+
+		}
+
+		GPIOB->ODR &= ~(1U << 6); //close first row
+
+
+		GPIOB->ODR |= (1U << 7); //open second row
+		if((GPIOA->IDR >> 1) & 1){
+
+
+
+
+			print_digit(5);
+		}
+
+
+		GPIOB->ODR &= ~(1U << 7); //close second row
+
+
+
+		GPIOA->ODR |= (1U << 15); //open third row
+		if((GPIOA->IDR >> 1) & 1){
+
+
+
+			print_digit(8);
+
+
+
+		}
+
+		GPIOA->ODR &= ~(1U << 15); //close third row
+
+
+
+		GPIOB->ODR |= (1U << 1); //open fourth row
+		if((GPIOA->IDR >> 1) & 1){
+
+
+
+
+			print_digit(0);
+
+
+		}
+
+
+		GPIOB->ODR &= ~(1U << 1); //close fourth row
+
+		EXTI-> RPR1 |= (1 << 1); //clear pending bit
+		set_rows_keypad();
+
 	}
-	GPIOB->ODR &= ~(1U << 7); //close second row
-
-
-
-	GPIOA->ODR |= (1U << 15); //open third row
-	if((GPIOB->IDR >> 0) & 1){
-		ssd_output(9);
-	}
-	GPIOA->ODR &= ~(1U << 15); //close third row
-
-
-
-	GPIOB->ODR |= (1U << 1); //open fourth row
-	if((GPIOB->IDR >> 0) & 1){
-		ssd_output(3131);
-	}
-	GPIOB->ODR &= ~(1U << 1); //close fourth row
-
 
 
 }
 
-	EXTI-> RPR1 |= (1 << 0); //clear pending bit
-	set_rows_keypad();
 
 
-
-
-
-
-
-}
 
 
 void EXTI2_3_IRQHandler(void){
 
-
+	GPIOB->ODR &= ~(1U << 9);	//reset  d10
 
 	if((GPIOB->IDR >> 3) & 1){
 		clear_rows_keypad();
@@ -429,62 +515,132 @@ void EXTI2_3_IRQHandler(void){
 
 		GPIOB->ODR |= (1U << 6); //open first row
 		if((GPIOB->IDR >> 3) & 1){
-			ssd_output(1111);
+
+
+
+			print_digit(11); //letter A
+
+
+
 		}
+
+
 		GPIOB->ODR &= ~(1U << 6); //close first row
 
 
 		GPIOB->ODR |= (1U << 7); //open second row
 		if((GPIOB->IDR >> 3) & 1){
-			ssd_output(2222);
+
+
+
+			print_digit(10);
+
 		}
+
+
 		GPIOB->ODR &= ~(1U << 7); //close second row
 
 
 
 		GPIOA->ODR |= (1U << 15); //open third row
 		if((GPIOB->IDR >> 3) & 1){
-			ssd_output(5555);
+
+			print_digit(10);
+
 		}
+
+
 		GPIOA->ODR &= ~(1U << 15); //close third row
 
 
 
 		GPIOB->ODR |= (1U << 1); //open fourth row
 		if((GPIOB->IDR >> 3) & 1){
-			ssd_output(3162);
+
+			print_digit(0);
+
 		}
+
+
 		GPIOB->ODR &= ~(1U << 1); //close fourth row
 
 
-
-	}
-
 		EXTI-> RPR1 |= (1 << 3); //clear pending bit
 		set_rows_keypad();
-
-
-
-
-
-}
-
-
-void EXTI4_15IRQHandler(void){
-
-	if((GPIOA->IDR >> 8) & 1 ){
-		GPIOA->ODR |= (1U << 7);
-		delay(1600000);
 	}
 
-	EXTI->RPR1 |= (1U << 8);
+
+
+
+
+	if((GPIOB->IDR >> 2) & 1){
+		clear_rows_keypad();
+		//try for each keypad rows
+
+		GPIOB->ODR |= (1U << 6); //open first row
+		if((GPIOB->IDR >> 2) & 1){
+
+			print_digit(1);
+		}
+
+
+		GPIOB->ODR &= ~(1U << 6); //close first row
+
+
+		GPIOB->ODR |= (1U << 7); //open second row
+		if((GPIOB->IDR >> 2) & 1){
+
+			print_digit(4);
+		}
+
+
+		GPIOB->ODR &= ~(1U << 7); //close second row
+
+
+
+		GPIOA->ODR |= (1U << 15); //open third row
+		if((GPIOB->IDR >> 2) & 1){
+
+			print_digit(7);
+		}
+
+
+		GPIOA->ODR &= ~(1U << 15); //close third row
+
+
+
+		GPIOB->ODR |= (1U << 1); //open fourth row
+		if((GPIOB->IDR >> 2) & 1){
+
+			print_digit(10);
+		}
+
+
+		GPIOB->ODR &= ~(1U << 1); //close fourth row
+
+
+		EXTI-> RPR1 |= (1 << 2); //clear pending bit
+		set_rows_keypad();
+	}
+
+
+
+
+
+
 
 }
 
+/*
+void EXTI4_15IRQHandler(void){
+
+
+}
+*/
 
 
 
-void configure_A0_int(){
+void configure_A0_int(){/*
 	RCC-> APBENR2 |= (1U << 0); //enable SYSCFG clock
 	EXTI-> EXTICR[0] |= (0U << 8*0); //chose port A (0. port) and 0th pin  (8*0)
 
@@ -495,7 +651,7 @@ void configure_A0_int(){
 
 	      NVIC_SetPriority(EXTI0_1_IRQn,1);
 	      NVIC_EnableIRQ(EXTI0_1_IRQn);
-
+*/
 }
 
 
@@ -542,146 +698,149 @@ void delay_ms(uint32_t s)
 void print_digit(volatile uint32_t dig)//SSD digit print function
 {
 
+
 	switch (dig){
 
 	case 0:
-		GPIOB->ODR |= (1U << 2);	//set  d7
-		GPIOB->ODR |= (1U << 8);	//set  d8
+		GPIOB->ODR |= (1U << 4);	//set  d12
 		GPIOB->ODR |= (1U << 5);	//set  d11
-		GPIOA->ODR |= (1U << 1);	//set  a1
-		GPIOA->ODR |= (1U << 11);	//set  a5
+		GPIOA->ODR |= (1U << 8);	//set  d9
+		GPIOA->ODR |= (1U << 4);	//set  a2
 		GPIOA->ODR |= (1U << 6);	//set  a6
+		GPIOA->ODR |= (1U << 7);	//set  a7
 
-		GPIOB->ODR &= ~(1U << 4);	//set  d12
+
+		GPIOB->ODR &= ~(1U << 8);	//set  d8
 
 		break;
 	case 1:
-		GPIOB->ODR |= (1U << 5);	//set  d11
-		GPIOA->ODR |= (1U << 1);	//set  a1
+		GPIOA->ODR |= (1U << 8);	//set  d9
+		GPIOA->ODR |= (1U << 4);	//set  a2
 
-		GPIOB->ODR &= ~(1U << 2);	//set  d7
-		GPIOB->ODR &= ~(1U << 8);	//set  d8
-		GPIOA->ODR &= ~(1U << 11);	//set  a5
-		GPIOA->ODR &= ~(1U << 6);	//set  a6
 		GPIOB->ODR &= ~(1U << 4);	//set  d12
-
-
+		GPIOB->ODR &= ~(1U << 5);	//set  d11
+		GPIOB->ODR &= ~(1U << 8);	//set  d8
+		GPIOA->ODR &= ~(1U << 6);	//set  a6
+		GPIOA->ODR &= ~(1U << 7);	//set  a7
 
 		break;
 	case 2:
-		GPIOB->ODR |= (1U << 2);	//set  d7
-		GPIOB->ODR |= (1U << 8);	//set  d8
 		GPIOB->ODR |= (1U << 4);	//set  d12
-		GPIOA->ODR |= (1U << 1);	//set  a1
-		GPIOA->ODR |= (1U << 6);	//set  a6
-
-
-
-		GPIOB->ODR &= ~(1U << 5);	//set  d11
-		GPIOA->ODR &= ~(1U << 11);	//set  a5
-
-		break;
-	case 3:
-		GPIOB->ODR |= (1U << 8);	//set  d8
 		GPIOB->ODR |= (1U << 5);	//set  d11
-		GPIOB->ODR |= (1U << 4);	//set  d12
-		GPIOA->ODR |= (1U << 1);	//set  a1
-		GPIOA->ODR |= (1U << 6);	//set  a6
+		GPIOB->ODR |= (1U << 8);	//set  d8
+		GPIOA->ODR |= (1U << 4);	//set  a2
+		GPIOA->ODR |= (1U << 7);	//set  a7
 
 
-
-
-		GPIOB->ODR &= ~(1U << 2);	//set  d7
-		GPIOA->ODR &= ~(1U << 11);	//set  a5
-
-		break;
-	case 4:
-		GPIOB->ODR |= (1U << 5);	//set  d11
-		GPIOB->ODR |= (1U << 4);	//set  d12
-		GPIOA->ODR |= (1U << 1);	//set  a1
-		GPIOA->ODR |= (1U << 11);	//set  a5
-
-
-
-
-		GPIOB->ODR &= ~(1U << 2);	//set  d7
-		GPIOB->ODR &= ~(1U << 8);	//set  d8
+		GPIOA->ODR &= ~(1U << 8);	//set  d9
 		GPIOA->ODR &= ~(1U << 6);	//set  a6
 
 		break;
-	case 5:
-		GPIOB->ODR |= (1U << 8);	//set  d8
+	case 3:
 		GPIOB->ODR |= (1U << 5);	//set  d11
-		GPIOB->ODR |= (1U << 4);	//set  d12
-		GPIOA->ODR |= (1U << 11);	//set  a5
+		GPIOA->ODR |= (1U << 8);	//set  d9
+		GPIOB->ODR |= (1U << 8);	//set  d8
+		GPIOA->ODR |= (1U << 4);	//set  a2
+		GPIOA->ODR |= (1U << 7);	//set  a7
+
+		GPIOB->ODR &= ~(1U << 4);	//reset  d12
+		GPIOA->ODR &= ~(1U << 6);	//reset  a6
+
+
+		break;
+	case 4:
+		GPIOA->ODR |= (1U << 8);	//set  d9
+		GPIOB->ODR |= (1U << 8);	//set  d8
+		GPIOA->ODR |= (1U << 4);	//set  a2
 		GPIOA->ODR |= (1U << 6);	//set  a6
 
+		GPIOB->ODR &= ~(1U << 4);	//reset  d12
+		GPIOB->ODR &= ~(1U << 5);	//reset  d11
+		GPIOA->ODR &= ~(1U << 7);	//reset  a7
 
+		break;
+	case 5:
+		GPIOB->ODR |= (1U << 5);	//set  d11
+		GPIOA->ODR |= (1U << 8);	//set  d9
+		GPIOB->ODR |= (1U << 8);	//set  d8
+		GPIOA->ODR |= (1U << 6);	//set  a6
+		GPIOA->ODR |= (1U << 7);	//set  a7
 
+		GPIOB->ODR &= ~(1U << 4);	//reset  d12
+		GPIOA->ODR &= ~(1U << 4);	//reset  a2
 
-		GPIOA->ODR &= ~(1U << 1);	//set  a1
-		GPIOB->ODR &= ~(1U << 2);	//set  d7
 
 		break;
 	case 6:
-		GPIOB->ODR |= (1U << 2);	//set  d7
-		GPIOB->ODR |= (1U << 8);	//set  d8
-		GPIOB->ODR |= (1U << 5);	//set  d11
 		GPIOB->ODR |= (1U << 4);	//set  d12
-		GPIOA->ODR |= (1U << 11);	//set  a5
+		GPIOB->ODR |= (1U << 5);	//set  d11
+		GPIOA->ODR |= (1U << 8);	//set  d9
+		GPIOB->ODR |= (1U << 8);	//set  d8
 		GPIOA->ODR |= (1U << 6);	//set  a6
+		GPIOA->ODR |= (1U << 7);	//set  a7
 
-
-
-
-		GPIOA->ODR &= ~(1U << 1);	//set  a1
+		GPIOA->ODR &= ~(1U << 4);	//reset  a2
 
 
 		break;
 	case 7:
-		GPIOB->ODR |= (1U << 5);	//set  d11
-		GPIOA->ODR |= (1U << 1);	//set  a1
-		GPIOA->ODR |= (1U << 11);	//set  a5
+		GPIOA->ODR |= (1U << 8);	//set  d9
+		GPIOA->ODR |= (1U << 4);	//set  a2
 		GPIOA->ODR |= (1U << 6);	//set  a6
+		GPIOA->ODR |= (1U << 7);	//set  a7
 
-
-
-
-
-		GPIOB->ODR &= ~(1U << 2);	//set  d7
-		GPIOB->ODR &= ~(1U << 8);	//set  d8
-		GPIOB->ODR &= ~(1U << 4);	//set  d12
+		GPIOB->ODR &= ~(1U << 4);	//reset  d12
+		GPIOB->ODR &= ~(1U << 5);	//reset  d11
+		GPIOB->ODR &= ~(1U << 8);	//reset  d8
 
 		break;
 	case 8:
-		GPIOB->ODR |= (1U << 2);	//set  d7
-		GPIOB->ODR |= (1U << 8);	//set  d8
-		GPIOB->ODR |= (1U << 5);	//set  d11
-		GPIOA->ODR |= (1U << 1);	//set  a1
-		GPIOA->ODR |= (1U << 11);	//set  a5
-		GPIOA->ODR |= (1U << 6);	//set  a6
 		GPIOB->ODR |= (1U << 4);	//set  d12
-
+		GPIOB->ODR |= (1U << 5);	//set  d11
+		GPIOA->ODR |= (1U << 8);	//set  d9
+		GPIOB->ODR |= (1U << 8);	//set  d8
+		GPIOA->ODR |= (1U << 4);	//set  a2
+		GPIOA->ODR |= (1U << 6);	//set  a6
+		GPIOA->ODR |= (1U << 7);	//set  a7
 
 		break;
 	case 9:
-		GPIOB->ODR |= (1U << 8);	//set  d8
 		GPIOB->ODR |= (1U << 5);	//set  d11
-		GPIOA->ODR |= (1U << 1);	//set  a1
-		GPIOA->ODR |= (1U << 11);	//set  a5
+		GPIOA->ODR |= (1U << 8);	//set  d9
+		GPIOB->ODR |= (1U << 8);	//set  d8
+		GPIOA->ODR |= (1U << 4);	//set  a2
 		GPIOA->ODR |= (1U << 6);	//set  a6
-		GPIOB->ODR |= (1U << 4);	//set  d12
+		GPIOA->ODR |= (1U << 7);	//set  a7
 
-
-
-
-		GPIOB->ODR &= ~(1U << 2);	//set  d7
-
+		GPIOB->ODR &= ~(1U << 4);	//reset  d12
 
 		break;
 
-	}
+	case 10:
+		GPIOB->ODR |= (1U << 5);	//set  d11
+		GPIOA->ODR |= (1U << 8);	//set  d9
+		GPIOB->ODR |= (1U << 8);	//set  d8
+		GPIOA->ODR |= (1U << 4);	//set  a2
 
+		GPIOA->ODR &= ~(1U << 6);	//set  a6
+		GPIOA->ODR &= ~(1U << 7);	//set  a7
+		GPIOB->ODR &= ~(1U << 4);	//reset  d12
+
+		break;
+
+	case 11: //letter A
+		GPIOB->ODR |= (1U << 4);	//set  d12
+		GPIOA->ODR |= (1U << 4);	//set  a2
+		GPIOA->ODR |= (1U << 6);	//set  a6
+		GPIOA->ODR |= (1U << 7);	//set  a7
+		GPIOB->ODR |= (1U << 8);	//set  d8
+		GPIOA->ODR |= (1U << 8);	//set  d9
+
+		GPIOB->ODR &= ~(1U << 5);	//set  d11
+
+
+
+	}
 }
 
 
@@ -689,7 +848,7 @@ void print_digit(volatile uint32_t dig)//SSD digit print function
 void ssd_output(uint32_t x)//special function to print 4 digit numbers
 {
 
-		uint32_t ddelay = 100;
+		uint32_t i = 100;
 
 		uint32_t dig1;
 		uint32_t dig2;
@@ -706,40 +865,40 @@ void ssd_output(uint32_t x)//special function to print 4 digit numbers
 		dig1 = x % 10U;
 
 	//uint8_t flag = 0;
-	while(ddelay > 0){
 
-		print_digit(dig1);
-		GPIOA->ODR &= ~(1U << 12);	//set  a4 to 0
-		delay(1600);
-		GPIOA->ODR |= (1U << 12);	//set  a4 to 1
-		//reset();
+		while(i>0){
 
-		print_digit(dig2);
-		GPIOA->ODR &= ~(1U << 5);	//set  a3 to 0
-		delay(1600);
-		GPIOA->ODR |= (1U << 5);	//set  a3 to 1
-		//reset();
+			print_digit(dig1);
+			GPIOA->ODR &= ~(1U << 11);	//reset  a5
+			delay(1600);
+			GPIOA->ODR |= (1U << 11);	//set  a5
+			//reset();
 
-		print_digit(dig3);
-		GPIOA->ODR &= ~(1U << 4);	//set  a2 to 0
-		delay(1600);
-		GPIOA->ODR |= (1U << 4);	//set  a2 to 1
-	//	reset();
+			print_digit(dig2);
+			GPIOA->ODR &= ~(1U << 12);	//reset  a4
+			delay(1600);
+			GPIOA->ODR |= (1U << 12);	//set  a4
+			//reset();
 
-		print_digit(dig4);
-		GPIOB->ODR &= ~(1U << 9);	//set  d10 to 0
-		delay(1600);
-		GPIOB->ODR |= (1U << 9);	//set  d10 to 1
-		//reset();
+			print_digit(dig3);
+			GPIOA->ODR &= ~(1U << 5);	//reset  a3
+			delay(1600);
+			GPIOA->ODR |= (1U << 5);	//set  a3
+			//reset();
+
+			print_digit(dig4);
+			GPIOB->ODR &= ~(1U << 9);	//reset  d10
+			delay(1600);
+			GPIOB->ODR |= (1U << 9);	//set  d10
+			//reset();
+
+			i = i-1;
+		}
 
 
-	ddelay = ddelay - 1;
-
-		//i = i-1;
 	}
 
 
-}
 
 
 
@@ -756,15 +915,15 @@ void config_keypad_pins(){
 		setMode('B',1,'O');  //D3 -> row4
 
 		//columns
-		setMode('A',10,'I'); //D4 -> column1
-		setMode('A',9,'I'); //D5 -> column2
-		setMode('B',0,'I'); //D6 -> column3
+		setMode('B',2,'I'); //D7 -> column1
+		setMode('B',0,'I'); //D6 -> column2
+		setMode('A',1,'I'); //A1 -> column3
 		setMode('B',3,'I'); //D13 -> column4
 
 		//set input pins pulldown mode for stability
-		GPIOA->PUPDR |= (2U << 2*10);
-		GPIOA->PUPDR |= (2U << 2*9);
+		GPIOB->PUPDR |= (2U << 2*2);
 		GPIOB->PUPDR |= (2U << 2*0);
+		GPIOA->PUPDR |= (2U << 2*1);
 		GPIOB->PUPDR |= (2U << 2*3);
 
 		//set all rows high as initially
@@ -780,20 +939,20 @@ void config_keypad_IRQs(){
 
 	//RCC-> APBENR2 |= (1U << 0); //enable SYSCFG clock
 
-	//PA10 8-9-10-11 mux
-	EXTI->EXTICR[2] |= (0U << 8*2);
-	EXTI->RTSR1 |= (1U << 10);
-	EXTI->IMR1 |= (1U << 10);
+	//PB2  0-1-2-3 mux
+	EXTI->EXTICR[0] |= (1U << 8*2);
+	EXTI->RTSR1 |= (1U << 2);
+	EXTI->IMR1 |= (1U << 2);
 
 
 
-	//PA9  8-9-10-11 mux
-	EXTI->EXTICR[2] |= (0U << 8*1);
-	EXTI->RTSR1 |= (1U << 9);
-	EXTI->IMR1 |= (1U << 9);
+	//PA1  0-1-2-3 mux
+	EXTI->EXTICR[0] |= (0U << 8*1);
+	EXTI->RTSR1 |= (1U << 1);
+	EXTI->IMR1 |= (1U << 1);
 
 
-	//PB0  0-1-2-3 mux
+	//PA0  0-1-2-3 mux
 	EXTI->EXTICR[0] |= (1U << 8*0);
 	EXTI->RTSR1 |= (1U << 0);
 	EXTI->IMR1 |= (1U << 0);
@@ -805,7 +964,7 @@ void config_keypad_IRQs(){
 	EXTI->IMR1 |= (1U << 3);
 
 
-    NVIC_SetPriority(EXTI0_1_IRQn,1);
+    NVIC_SetPriority(EXTI0_1_IRQn,2);
     NVIC_EnableIRQ(EXTI0_1_IRQn);
 	NVIC_SetPriority(EXTI2_3_IRQn,1);
 	NVIC_EnableIRQ(EXTI2_3_IRQn);
