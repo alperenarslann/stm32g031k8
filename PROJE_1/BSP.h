@@ -35,9 +35,6 @@
 
 extern uint32_t SystemCoreClock;
 
-enum mode{
-	mod0=0,mod1=1,mod2=2,mod3=3,mod4=4,mod5=5
-};
 
 
 
