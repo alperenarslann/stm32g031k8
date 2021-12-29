@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>esad_lab2_q1</name>
+	<name>signal_follower</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -28,4 +28,16 @@
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>startup_stm32g031k8tx.s</name>
+			<type>1</type>
+			<locationURI>WORKSPACE_LOC/include/startup_stm32g031k8tx.s</locationURI>
+		</link>
+		<link>
+			<name>system_stm32g0xx.c</name>
+			<type>1</type>
+			<locationURI>WORKSPACE_LOC/include/system_stm32g0xx.c</locationURI>
+		</link>
+	</linkedResources>
 </projectDescription>
